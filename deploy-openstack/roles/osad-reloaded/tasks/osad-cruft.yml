@@ -13,26 +13,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-- name: remove lxc container directories
-  file: path=/run/lxc/lock/var/lib/lxc/ state=absent
-  when: inventory_hostname in groups['target'] and osad_rm_lxc
+  - name: remove lxc container directories
+    file: path=/run/lxc/lock/var/lib/lxc/ state=absent
+    when: inventory_hostname in groups['target'] and osad_rm_lxc
 
-- name: remove stale ansible facts
-  file: path=/etc/openstack_deploy/ansible_facts/ state=absent
-  when: inventory_hostname in groups['deploy'] and osad_rm_facts
+  - name: remove stale ansible facts
+    file: path=/etc/openstack_deploy/ansible_facts/ state=absent
+    when: inventory_hostname in groups['deploy'] and osad_rm_facts
 
-- name: remove openstack inventory backup
-  file: path=/etc/openstack_deploy/backup_openstack_inventory.tar state=absent
-  when: inventory_hostname in groups['deploy'] and osad_rm_backups
+  - name: remove openstack inventory backup
+    file: path=/etc/openstack_deploy/backup_openstack_inventory.tar state=absent
+    when: inventory_hostname in groups['deploy'] and osad_rm_backups
 
-- name: remove openstack user_secrets backup
-  file: path=/etc/openstack_deploy/user_secrets.yml.tar state=absent
-  when: inventory_hostname in groups['deploy'] and osad_rm_backups
+  - name: remove openstack user_secrets backup
+    file: path=/etc/openstack_deploy/user_secrets.yml.tar state=absent
+    when: inventory_hostname in groups['deploy'] and osad_rm_backups
 
-- name: remove current openstack_inventory file
-  file: path=/etc/openstack_deploy/openstack_inventory.json state=absent
-  when: inventory_hostname in groups['deploy'] and osad_rm_inventory
+  - name: remove current openstack_inventory file
+    file: path=/etc/openstack_deploy/openstack_inventory.json state=absent
+    when: inventory_hostname in groups['deploy'] and osad_rm_inventory
 
-- name: remove current openstack_hostnames_ips file
-  file: path=/etc/openstack_deploy/openstack_hostnames_ips.yml state=absent
-  when: inventory_hostname in groups['deploy'] and osad_rm_openstack_hostnames_ips
+  - name: remove current openstack_hostnames_ips file
+    file: path=/etc/openstack_deploy/openstack_hostnames_ips.yml state=absent
+    when: inventory_hostname in groups['deploy'] and osad_rm_openstack_hostnames_ips
+
+  - name: remove any previous osad hosts playbook retries
+    file: path=/root/setup-infrastructure.retry state=absent
+    when: inventory_hostname in groups['deploy'] and osad_rm_retries
+
+  - name: remove any previous osad infrastructure playbook retries
+    file: path=/root/setup-hosts.retry state=absent
+    when: inventory_hostname in groups['deploy'] and osad_rm_retries
+
+  - name: remove old openrc files
+    file: path=/root/openrc state=absent
+    when: inventory_hostname in groups['target'] and osad_rm_openrc
+
+  - name: clean /root/.cache/pip
+    file: path=/root/.cache/pip state=absent
+    when: inventory_hostname in groups['target'] and osad_rm_cache_pip
+
+#- name: clean /tmp on hosts
+#  shell: rm -rf /tmp/*
+#  when: inventory_hostname in groups['target'] osad_rm_tmp
+
+  - name: Remove known files and folders.
+    shell: |
+      rm -rf {{ item }}
+    failed_when: false
+    with_items: remove_files
+    when: inventory_hostname in groups['target']

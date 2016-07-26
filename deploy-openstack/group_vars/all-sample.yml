@@ -42,8 +42,16 @@ os_timezone: "America/New_York"
 # FOR DEVELOPMENT USE ONLY:
 ## Use the following scripts to remove cruft when rebuilding your environment.
 ## In many cases, you can leave "as-is".
+# FOR DEVELOPMENT USE ONLY:
+## Use the following scripts to remove cruft when rebuilding your environment.
+## In many cases, you can leave "as-is".
 osad_rm_lxc: true
 osad_rm_facts: true
 osad_rm_backups: true
 osad_rm_inventory: true
 osad_rm_openstack_hostnames_ips: true
+osad_rm_cache_pip: true
+osad_rm_retries: true
+osad_rm_openrc: true
+osad_rm_tmp: true
+osad_rm_wipe: true
