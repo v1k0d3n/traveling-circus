@@ -1,0 +1,9 @@
+# Host Specifics:
+os_hostname: server-02
+os_ipaddr_eth0: 192.168.3.22
+os_submsk_eth0: 255.255.255.0
+os_gatewy_eth0: 192.168.3.1
+
+# OSAD Network Interfaces
+## What is the last octet of this network host (example: 192.168.3.{{os_ipaddr}})
+os_ipaddr_osa: 22

@@ -14,8 +14,8 @@ deploy-openstack/includes/future
 
 # Things we really want to keep as examples:
 !deploy-openstack/inventory-sample.all
-!deploy-openstack/host_vars/example-01.yml
-!deploy-openstack/host_vars/example-02.yml
+!deploy-openstack/host_vars/server-01.yml
+!deploy-openstack/host_vars/server-02.yml
 !deploy-openstack/group_vars/all-sample.yml
 !deploy-openstack/includes/ssh_keys/user01
 !deploy-openstack/includes/ssh_keys/user02
