@@ -1,0 +1,21 @@
+# Files that don't need to be in Git:
+.DS_Store
+.vagrant
+*.retry
+temp
+
+
+# Things we really don't need stored in GitHub:
+deploy-openstack/inventory.yml
+deploy-openstack/host_vars/*
+deploy-openstack/group_vars/*
+deploy-openstack/includes/ssh_keys/*
+deploy-openstack/includes/future
+
+# Things we really want to keep as examples:
+!deploy-openstack/inventory-sample.all
+!deploy-openstack/host_vars/example-01.yml
+!deploy-openstack/host_vars/example-02.yml
+!deploy-openstack/group_vars/all-sample.yml
+!deploy-openstack/includes/ssh_keys/user01
+!deploy-openstack/includes/ssh_keys/user02

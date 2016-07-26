@@ -1,0 +1,135 @@
+# Copyright 2016, JinkIT, and it's Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Physical interface
+# ------------------
+# All nodes will have some physical interface
+auto eth0
+iface eth0 inet static
+    address {{os_ipaddr_eth0}}
+    netmask {{os_submsk_eth0}}
+    gateway {{os_gatewy_eth0}}
+    dns-search {{os_domain}}
+    dns-nameservers {{os_namesv01}} {{os_namesv02}}
+
+
+auto eth1
+iface eth0 inet manual
+    pre-up ip link set eth1 up
+
+
+# Bridge for vlan network
+# -----------------------
+# Used by all compute and network nodes
+# The IP address on this device is optional
+# This requires a native VLAN. If there are no native vlans then you'll
+#  need to configure the interface IP address, netmask, gateway, and dns-servers
+#  in the tagged vlan network interface section.
+auto br-vlan
+iface br-vlan inet static
+    pre-up ip link add br-vlan-veth type veth peer name eth12 || true  # Create veth pair
+    pre-up ip link set br-vlan-veth up  # Set the veth UP
+    pre-up ip link set eth12 up  # Set the veth UP
+    post-down ip link del br-vlan-veth || true  # Delete veth pair on DOWN
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eth1 br-vlan-veth  # Notice this bridge port is an Untagged host interface
+    offload-sg off
+    address 172.29.248.{{os_ipaddr_osa}}           # ONLY WHEN A NATIVE VLAN IS PRESENT
+    netmask 255.255.252.0            # ONLY WHEN A NATIVE VLAN IS PRESENT
+#   gateway 172.29.248.1             # ONLY WHEN A NATIVE VLAN IS PRESENT
+    dns-nameservers {{os_namesv01}} {{os_namesv02}}  # ONLY WHEN A NATIVE VLAN IS PRESENT
+
+
+# Tagged vlan network interfaces
+# ------------------------------
+# Used in various bridges
+
+## This interface is only used when there's no native VLAN
+##  The vlan 1 is being used as an example which is generally
+##  the default native VLAN.
+#auto br-vlan.1
+#iface br-vlan.1 inet manual
+#    vlan-raw-device br-vlan
+#    vlan_id 1
+#    address 172.29.248.{{os_ipaddr_osa}}
+#    netmask 255.255.252.0
+#    gateway 172.29.248.1
+#    dns-nameservers {{os_namesv01}} {{os_namesv02}}
+
+auto br-vlan.101
+iface br-vlan.101 inet manual
+    vlan-raw-device br-vlan
+    vlan_id 101
+
+auto br-vlan.102
+iface br-vlan.102 inet manual
+    vlan-raw-device br-vlan
+    vlan_id 102
+
+auto br-vlan.103
+iface br-vlan.103 inet manual
+    vlan-raw-device br-vlan
+    vlan_id 103
+
+
+# Bridge for vxlan network
+# ------------------------
+# Used by all compute and network nodes
+auto br-vxlan
+iface br-vxlan inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports br-vlan.101  # Notice the bridge port is the vlan tagged interface
+    offload-sg off
+    address 172.29.240.{{os_ipaddr_osa}}
+    netmask 255.255.252.0
+    dns-nameservers {{os_namesv01}} {{os_namesv02}}
+
+
+# Bridge for management network
+# -----------------------------
+# Used by all nodes
+auto br-mgmt
+iface br-mgmt inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports br-vlan.102  # Notice the bridge port is the vlan tagged interface
+    offload-sg off
+    address 172.29.236.{{os_ipaddr_osa}}
+    netmask 255.255.252.0
+    dns-nameservers {{os_namesv01}} {{os_namesv02}}
+
+
+# Bridge for storage network
+# --------------------------
+# Used by all compute and storage nodes
+auto br-storage
+iface br-storage inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports br-vlan.103  # Notice the bridge port is the vlan tagged interface
+    offload-sg off
+    address 172.29.244.{{os_ipaddr_osa}}
+    netmask 255.255.252.0
+    dns-nameservers {{os_namesv01}} {{os_namesv02}}
+
+
+# Source other interface files that may be found
+# ----------------------------------------------
+source /etc/network/interfaces.d/*.cfg

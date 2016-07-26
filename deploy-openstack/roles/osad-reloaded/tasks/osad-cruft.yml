@@ -1,0 +1,38 @@
+---
+# Copyright 2016, JinkIT, and it's Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+- name: remove lxc container directories
+  file: path=/run/lxc/lock/var/lib/lxc/ state=absent
+  when: inventory_hostname in groups['target'] and osad_rm_lxc
+
+- name: remove stale ansible facts
+  file: path=/etc/openstack_deploy/ansible_facts/ state=absent
+  when: inventory_hostname in groups['deploy'] and osad_rm_facts
+
+- name: remove openstack inventory backup
+  file: path=/etc/openstack_deploy/backup_openstack_inventory.tar state=absent
+  when: inventory_hostname in groups['deploy'] and osad_rm_backups
+
+- name: remove openstack user_secrets backup
+  file: path=/etc/openstack_deploy/user_secrets.yml.tar state=absent
+  when: inventory_hostname in groups['deploy'] and osad_rm_backups
+
+- name: remove current openstack_inventory file
+  file: path=/etc/openstack_deploy/openstack_inventory.json state=absent
+  when: inventory_hostname in groups['deploy'] and osad_rm_inventory
+
+- name: remove current openstack_hostnames_ips file
+  file: path=/etc/openstack_deploy/openstack_hostnames_ips.yml state=absent
+  when: inventory_hostname in groups['deploy'] and osad_rm_openstack_hostnames_ips

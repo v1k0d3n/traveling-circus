@@ -1,0 +1,275 @@
+---
+# Copyright 2016, JinkIT, and it's Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+cidr_networks:
+  container: 172.29.236.0/22
+  tunnel: 172.29.240.0/22
+  storage: 172.29.244.0/22
+used_ips:
+# Management CIDR Exclusions:
+  - "172.29.236.1-50"
+# VXLAN/Tunnel CIDR Exclusions:
+  - "172.29.240.1-50"
+# Storage CIDR Exclusions:
+  - "172.29.244.1-50"
+global_overrides:
+  internal_lb_vip_address: {{internal_lb_vip_address}}
+  external_lb_vip_address: {{external_lb_vip_address}}
+  management_bridge: "br-mgmt"
+  tunnel_bridge: "br-vxlan"
+  provider_networks:
+    - network:
+        type: "raw"
+        container_bridge: "br-mgmt"
+        container_interface: "eth1"
+        container_type: "veth"
+        ip_from_q: "container"
+        is_container_address: true
+        is_ssh_address: true
+        group_binds:
+          - all_containers
+          - hosts
+    - network:
+        group_binds:
+          - glance_api
+          - cinder_api
+          - cinder_volume
+          - nova_compute
+          - swift_proxy
+        type: "raw"
+        container_bridge: "br-storage"
+        container_type: "veth"
+        container_interface: "eth2"
+        container_mtu: "9000"
+        ip_from_q: "storage"
+    - network:
+        group_binds:
+          - neutron_linuxbridge_agent
+        container_bridge: "br-vxlan"
+        container_type: "veth"
+        container_interface: "eth10"
+        container_mtu: "9000"
+        ip_from_q: "tunnel"
+        type: "vxlan"
+        range: "1:1000"
+        net_name: "vxlan"
+    - network:
+        group_binds:
+          - neutron_linuxbridge_agent
+        container_bridge: "br-vlan"
+        container_type: "veth"
+        container_interface: "eth11"
+        type: "vlan"
+        range: "101:200,301:400"
+        net_name: "vlan"
+    - network:
+        group_binds:
+          - neutron_linuxbridge_agent
+        container_bridge: "br-vlan"
+        container_type: "veth"
+        container_interface: "eth12"
+        host_bind_override: "eth12"
+        type: "flat"
+        net_name: "flat"
+#
+# --------
+# Define three shared infrastructure hosts:
+shared-infra_hosts:
+  os-node01:
+    ip: 172.29.236.21
+  os-node02:
+    ip: 172.29.236.22
+  os-node03:
+    ip: 172.29.236.23
+  os-node04:
+    ip: 172.29.236.24
+  os-node05:
+    ip: 172.29.236.25
+#
+# --------
+# Define three package repository hosts:
+repo-infra_hosts:
+  os-node01:
+    ip: 172.29.236.21
+  os-node02:
+    ip: 172.29.236.22
+  os-node03:
+    ip: 172.29.236.23
+  os-node04:
+    ip: 172.29.236.24
+  os-node05:
+    ip: 172.29.236.25
+#
+# --------
+# Define three OpenStack infrastructure hosts:
+os-infra_hosts:
+  os-node01:
+    ip: 172.29.236.21
+  os-node02:
+    ip: 172.29.236.22
+  os-node03:
+    ip: 172.29.236.23
+  os-node04:
+    ip: 172.29.236.24
+  os-node05:
+    ip: 172.29.236.25
+#
+# --------
+# Define three OpenStack identity hosts:
+identity_hosts:
+  os-node01:
+    ip: 172.29.236.21
+  os-node02:
+    ip: 172.29.236.22
+  os-node03:
+    ip: 172.29.236.23
+  os-node04:
+    ip: 172.29.236.24
+  os-node05:
+    ip: 172.29.236.25
+#
+# --------
+# Define three OpenStack network hosts:
+network_hosts:
+  os-node01:
+    ip: 172.29.236.21
+  os-node02:
+    ip: 172.29.236.22
+  os-node03:
+    ip: 172.29.236.23
+  os-node04:
+    ip: 172.29.236.24
+  os-node05:
+    ip: 172.29.236.25
+#
+# --------
+# Define an OpenStack compute host:
+compute_hosts:
+  os-node01:
+    ip: 172.29.236.21
+  os-node02:
+    ip: 172.29.236.22
+  os-node03:
+    ip: 172.29.236.23
+  os-node04:
+    ip: 172.29.236.24
+  os-node05:
+    ip: 172.29.236.25
+#
+# --------
+# Define three OpenStack storage infrastructure hosts:
+storage-infra_hosts:
+  os-node01:
+    ip: 172.29.236.21
+  os-node02:
+    ip: 172.29.236.22
+  os-node03:
+    ip: 172.29.236.23
+  os-node04:
+    ip: 172.29.236.24
+  os-node05:
+    ip: 172.29.236.25
+#
+# --------
+# Define an OpenStack storage host:
+#
+storage_hosts:
+  os-node01:
+    ip: 172.29.236.21
+    container_vars:
+      cinder_storage_availability_zone: cinderAZ_1
+      cinder_default_availability_zone: cinderAZ_1
+      cinder_backends:
+        lvm:
+          volume_backend_name: LVM_iSCSI
+          volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+          volume_group: cinder-volumes
+          iscsi_ip_address: "{{ storage_address }}"
+        limit_container_types: cinder_volume
+
+  os-node02:
+    ip: 172.29.236.22
+    container_vars:
+      cinder_storage_availability_zone: cinderAZ_1
+      cinder_default_availability_zone: cinderAZ_1
+      cinder_backends:
+        lvm:
+          volume_backend_name: LVM_iSCSI
+          volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+          volume_group: cinder-volumes
+          iscsi_ip_address: "{{ storage_address }}"
+        limit_container_types: cinder_volume
+
+  os-node03:
+    ip: 172.29.236.23
+    container_vars:
+      cinder_storage_availability_zone: cinderAZ_1
+      cinder_default_availability_zone: cinderAZ_1
+      cinder_backends:
+        lvm:
+          volume_backend_name: LVM_iSCSI
+          volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+          volume_group: cinder-volumes
+          iscsi_ip_address: "{{ storage_address }}"
+        limit_container_types: cinder_volume
+
+  os-node04:
+    ip: 172.29.236.24
+    container_vars:
+      cinder_storage_availability_zone: cinderAZ_1
+      cinder_default_availability_zone: cinderAZ_1
+      cinder_backends:
+        lvm:
+          volume_backend_name: LVM_iSCSI
+          volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+          volume_group: cinder-volumes
+          iscsi_ip_address: "{{ storage_address }}"
+        limit_container_types: cinder_volume
+
+  os-node05:
+    ip: 172.29.236.25
+    container_vars:
+      cinder_storage_availability_zone: cinderAZ_1
+      cinder_default_availability_zone: cinderAZ_1
+      cinder_backends:
+        lvm:
+          volume_backend_name: LVM_iSCSI
+          volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+          volume_group: cinder-volumes
+          iscsi_ip_address: "{{ storage_address }}"
+        limit_container_types: cinder_volume
+#
+# --------
+# Define a logging host:
+#
+log_hosts:
+  os-node05:
+    ip: 172.29.236.25
+#
+# --------
+# Define a haproxy hosts:
+#
+haproxy_hosts:
+  os-node01:
+    ip: 172.29.236.21
+  os-node02:
+    ip: 172.29.236.22
+  os-node03:
+    ip: 172.29.236.23
+  os-node04:
+    ip: 172.29.236.24
+  os-node05:
+    ip: 172.29.236.25
+# END_DEPLOYMENT
