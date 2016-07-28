@@ -6,6 +6,7 @@ temp
 
 
 # Things we really don't need stored in GitHub:
+deploy-openstack/*.retry
 deploy-openstack/inventory.yml
 deploy-openstack/host_vars/*
 deploy-openstack/group_vars/*

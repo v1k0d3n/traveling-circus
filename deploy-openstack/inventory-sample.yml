@@ -20,13 +20,6 @@ server-03     ansible_ssh_host=192.168.3.23
 server-04     ansible_ssh_host=192.168.3.24
 server-05     ansible_ssh_host=192.168.3.25
 
-# DHCP Addresses: Use when required
-#server-01     ansible_ssh_host=192.168.3.135
-#server-02     ansible_ssh_host=192.168.3.185
-#server-03    ansible_ssh_host=192.168.3.196
-#server-04     ansible_ssh_host=192.168.3.178
-#server-05     ansible_ssh_host=192.168.3.106
-
 # OSAD: Deploy Hosts
 [deploy]
 server-01

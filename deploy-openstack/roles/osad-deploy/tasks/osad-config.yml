@@ -19,8 +19,8 @@
   tags:
     - osad-config
 
-- name: generate ssh keys for the deployment host
-  command: cp /opt/openstack-ansible/etc/openstack_deploy "{{osad_confdir}}"
+- name: copy the openstack-ansible config directory to osad_confdir
+  command: cp /opt/openstack-ansible/etc/openstack_deploy {{osad_confdir}}
   when: (inventory_hostname in groups['deploy'] and osad_confdir_exists.stat.exists  == False)
   tags:
     - osad-config
@@ -28,8 +28,10 @@
 - name: configure networking
   template:
     src: template/openstack_user_config.yml.j2
-    dest: "{{osad_confdir}}"/openstack_user_config.yml.j2
+    dest: "{{osad_confdir}}/openstack_user_config.yml.j2"
     backup: yes
+#  with_items:
+#    - "osad_confdir"
   when: inventory_hostname in groups['deploy']
   tags:
     - osad-config
@@ -37,8 +39,10 @@
 - name: configure networking
   template:
     src: template/user_variables.yml.j2
-    dest: "{{osad_confdir}}"/user_variables.yml.j2
+    dest: "{{osad_confdir}}/user_variables.yml.j2"
     backup: yes
+#  with_items:
+#    - "osad_confdir"
   when: inventory_hostname in groups['deploy']
   tags:
     - osad-config

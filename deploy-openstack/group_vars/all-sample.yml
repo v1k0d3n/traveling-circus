@@ -14,7 +14,8 @@ root_key: "/root/.ssh/id_rsa"
 
 # OSAD Snapshot:
 ## This can be a tag, branchname, or commit
-osa_snapshot: stable/mitaka
+osa_snapshot: 13.1.4
+osad_confdir: /etc/openstack_deploy
 
 # HAProxy VIP details used for API endpoints:
 ## Typically unused IP Public Interface (External) and br-mgmt (Internal)
@@ -22,14 +23,16 @@ external_lb_vip_address: 192.168.3.20
 internal_lb_vip_address: 172.29.236.20
 external_lb_vip_submask: 24
 internal_lb_vip_submask: 22
-haproxy_keepalived_external_interface: br-vlan
+#
+# In this example, we're using the 192.168.3.20/24 as our public Horizon/API IP:
+haproxy_keepalived_external_interface: eth0
 haproxy_keepalived_internal_interface: br-mgmt
 haproxy_keepalived_external_virtual_router_id: 20
 
 # Ansible will attempt to reboot hosts. Do you want this? Boolean content: yes, true, 1 / no, false, 0.
 ## These variables are expected to be overridden during run. See README.md for more detail.
-os_reboot: false
-os_hosts_build: false
+os_reboot: true
+os_hosts_build: true
 
 # Domain used for the Traveling Circus hosts:
 os_domain: kubelab.com
@@ -39,9 +42,6 @@ os_namesv02: 8.8.4.4
 # Set the timezone for the environment per
 os_timezone: "America/New_York"
 
-# FOR DEVELOPMENT USE ONLY:
-## Use the following scripts to remove cruft when rebuilding your environment.
-## In many cases, you can leave "as-is".
 # FOR DEVELOPMENT USE ONLY:
 ## Use the following scripts to remove cruft when rebuilding your environment.
 ## In many cases, you can leave "as-is".

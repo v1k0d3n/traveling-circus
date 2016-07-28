@@ -25,7 +25,7 @@ The Traveling Circus consists of the following hardware (which can be modfied to
 
 ## The Traveling Circus: Getting Started
 
-You will want to get started in the `deploy-openstack` folder, where you will find a set of Ansible playbooks which will prepare your host for an OSAD. The current version of OSAD is: ##############.
+You will want to get started in the `deploy-openstack` folder, where you will find a set of Ansible playbooks which will prepare your host for an OSAD. The current version of OSAD is `stable/mitaka` but modified with a simple variable ("osa_snapshot: 13.1.4").
 
 ### Getting Started: Assumptions
 
@@ -119,24 +119,27 @@ The playbooks are heavily tagged, and can be limited according to your needs. I 
   root@os-node01: # openstack-ansible setup-infrastructure.yml --syntax-check
   ```
 
-2. If that is successful, than go back to the root openstack-ansible directory and bootstrap ansible.
+2. Next, create the passwords used for your Openstack API's and other various Openstack components.
+
+  ```
+  root@os-node01:/opt/openstack-ansible/scripts# cd /opt/openstack-ansible/scripts
+  root@os-node01:/opt/openstack-ansible/scripts# python pw-token-gen.py --file /etc/openstack_deploy/user_secrets.yml
+  ```
+
+  Note: Your passwords for Horizon will be found in: `/etc/openstack_deploy/user_secrets.yml`. Refer back to this file afer your deployment is complete.
+
+3. Go back to the root openstack-ansible directory and bootstrap the Ansible requirements.
 
   ```
   root@os-node01: # cd /opt/openstack-ansible/
   root@os-node01: # scripts/bootstrap-ansible.sh
   ```
 
-3. Move into the /opt/openstack-ansible/playbooks directory for the rest of your work, and run the setup-hosts.yml playbook.
+4. Move into the /opt/openstack-ansible/playbooks directory for the rest of your work, and run the setup-hosts.yml playbook.
 
   ```
   root@os-node01: # cd /opt/openstack-ansible/playbooks
   root@os-node01: # openstack-ansible setup-hosts.yml
-  ```
-
-4. _Optional:_ The HAPoxy playbooks should have been pulled in during the bootstrap-ansible run, but if you need to pull them in manually you can do the following.
-
-  ```
-  root@os-node01: # ansible-galaxy install -r ../ansible-role-requirements.yml
   ```
 
 5. Deploy HAProxy using the following playbook.
