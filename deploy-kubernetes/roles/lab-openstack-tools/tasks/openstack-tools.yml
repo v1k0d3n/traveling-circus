@@ -1,0 +1,76 @@
+---
+# Copyright 2016, JinkIT, and it's Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+- name: deploy the openstack tools directory in each lab
+  file: path=/home/{{item.name}}/openstack state=directory recurse=yes group=users owner={{item.name}}
+  with_items:
+    - "{{users}}"
+  tags:
+    - lab-openstack-tools
+
+- name: copy the openrc control file for each user
+  template:
+    src: template/openrc.j2
+    dest: /home/{{item.name}}/openstack/openrc
+    owner: "{{item.name}}"
+    group: users
+    mode: "u=rwx,g=r,o=r"
+  with_items: "{{users}}"
+  tags:
+    - lab-openstack-tools
+
+- name: copy the environment deployment script for each user
+  template:
+    src: template/openstack-env.sh.j2
+    dest: /home/{{item.name}}/openstack/deploy-environment.sh
+    owner: "{{item.name}}"
+    group: users
+    mode: "u=rwx,g=r,o=r"
+  with_items: "{{users}}"
+  tags:
+    - lab-openstack-tools
+
+- name: copy the server deployment script for each user
+  template:
+    src: template/openstack-servers.sh.j2
+    dest: /home/{{item.name}}/openstack/deploy-servers.sh
+    owner: "{{item.name}}"
+    group: users
+    mode: "u=rwx,g=r,o=r"
+  with_items: "{{users}}"
+  tags:
+    - lab-openstack-tools
+
+- name: copy tools to destroy the environment
+  template:
+    src: template/destroy-lab.sh.j2
+    dest: /home/{{item.name}}/openstack/destroy-lab.sh
+    owner: "{{item.name}}"
+    group: users
+    mode: "u=rwx,g=r,o=r"
+  with_items: "{{users}}"
+  tags:
+    - lab-openstack-tools
+
+- name: copy tools to rebuild the servers
+  template:
+    src: template/rebuild-servers.sh.j2
+    dest: /home/{{item.name}}/openstack/rebuild-servers.sh
+    owner: "{{item.name}}"
+    group: users
+    mode: "u=rwx,g=r,o=r"
+  with_items: "{{users}}"
+  tags:
+    - lab-openstack-tools

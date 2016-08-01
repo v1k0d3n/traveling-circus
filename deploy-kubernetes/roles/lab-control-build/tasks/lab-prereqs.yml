@@ -1,0 +1,88 @@
+---
+# Copyright 2016, JinkIT, and it's Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+- name: upgrade the entire system in preparation for prerequisites
+  apt: upgrade=full
+  tags:
+    - lab-control-prereqs
+
+- name: add prerequisites for the control host
+  apt: name={{ item }} update_cache=yes state=present state=latest
+  with_items:
+    - vim
+    - git
+    - gcc
+    - ntp
+    - sudo
+    - screen
+    - ntpdate
+    - openssh-server
+    - build-essential
+    - libyaml-dev
+    - python-dev
+    - libffi-dev
+    - libssl-dev
+    - libffi6
+    - curl
+  tags:
+    - lab-control-prereqs
+
+- name: first, remove problematic packages
+  apt:
+    package: "{{ item }}"
+    state: absent
+  with_items:
+    - python-pip
+    - python-pip-whl
+    - python-virtualenv
+  tags:
+    - lab-control-prereqs
+
+- name: install system pip (cleaner deployment)
+  get_url:
+    url: https://bootstrap.pypa.io/get-pip.py
+    dest: /tmp/get-pip.py
+  tags:
+    - lab-control-prereqs
+
+- name: install most recent version of pip
+  shell: python /tmp/get-pip.py
+  tags:
+    - lab-control-prereqs
+
+- name: install most recent version of virtualenv
+  pip:
+    name: virtualenv
+    state: present
+  tags:
+    - lab-control-prereqs
+
+- name: install ansible via pip (for recent version==2.1.0.0)
+  pip:
+    name: ansible==2.1.0.0
+    state: present
+  tags:
+    - lab-control-prereqs
+
+- name: install openstack-client and tools
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-openstackclient
+    - python-neutronclient
+    - kargo
+  tags:
+    - lab-control-prereqs

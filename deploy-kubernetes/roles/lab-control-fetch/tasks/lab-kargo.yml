@@ -1,0 +1,61 @@
+---
+# Copyright 2016, JinkIT, and it's Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+- name: ensure that openstack provider variable is enabled
+  lineinfile:
+    dest: /home/{{item.name}}/kargo/inventory/group_vars/all.yml
+    line: "cloud_provider: openstack"
+    state: present
+  with_items: "{{users}}"
+  tags:
+    - lab-control-kargo
+
+- name: ensure that openstack provider variable is enabled
+  lineinfile:
+    dest: /home/{{item.name}}/kargo/inventory/group_vars/all.yml
+    line: 'network: "k8s-network"'
+    state: present
+  with_items: "{{users}}"
+  tags:
+    - lab-control-kargo
+
+- name: ensure that openstack provider variable is enabled
+  lineinfile:
+    dest: /home/{{item.name}}/kargo/inventory/group_vars/all.yml
+    line: 'network: "k8s-pub-key"'
+    state: present
+  with_items: "{{users}}"
+  tags:
+    - lab-control-kargo
+
+- name: ensure that openstack provider variable is enabled
+  lineinfile:
+    dest: /home/{{item.name}}/kargo/inventory/group_vars/all.yml
+    line: 'ansible_python_interpreter: "/opt/bin/python"'
+    state: present
+  with_items: "{{users}}"
+  tags:
+    - lab-control-kargo
+
+- name: copy an inventory template to the kargo/inventory directory
+  template:
+    src: template/inventory.cfg.j2
+    dest: /home/{{item.name}}/kargo/inventory/inventory.cfg
+    owner: "{{item.name}}"
+    group: users
+    mode: "u=rw,g=rw,o=rw"
+  with_items: "{{users}}"
+  tags:
+    - lab-kargo-inventory

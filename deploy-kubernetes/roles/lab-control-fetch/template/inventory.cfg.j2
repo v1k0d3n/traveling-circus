@@ -1,0 +1,18 @@
+[kube-master]
+{{openstack_labsrv}}1 ansible_ssh_host={{openstack_secnet02}}
+{{openstack_labsrv}}2 ansible_ssh_host={{openstack_secnet02}}
+{{openstack_labsrv}}3 ansible_ssh_host={{openstack_secnet02}}
+#
+[etcd]
+{{openstack_labsrv}}1
+{{openstack_labsrv}}2
+{{openstack_labsrv}}3
+#
+[kube-node]
+{{openstack_labsrv}}1
+{{openstack_labsrv}}2
+{{openstack_labsrv}}3
+#
+[k8s-cluster:children]
+kube-node
+kube-master

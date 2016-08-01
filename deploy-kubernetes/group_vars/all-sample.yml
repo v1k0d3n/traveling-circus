@@ -1,0 +1,127 @@
+################################
+### DEPLOYMENT DEPLOYMENT:
+# User used to ssh to your control host:
+ansible_user: ubuntu
+#
+# Set the timezone for the environment:
+os_timezone: "America/New_York"
+#
+# Allowed subnet where users would ssh to the control host from:
+sshd_subnet: "192.168.0.0/16"
+################################
+### OPENSTACK DEPLOYMENT:
+# Openstack internal API IP address:
+openstack_api: 172.29.236.100
+# Image used for Kubernetes lab masters, nodes, and etcd members:
+openstack_image: coreos-stable-1010.6.0
+# Flavor used for Kubernetes lab masters, nodes, and etcd members:
+openstack_flavor: J4.MAC.2G.20XG
+# Name of public subnet for lab environment:
+openstack_pubnet: public
+# Public key names for each lab:
+openstack_pubkey: k8s-pub-key
+# Security group name for each of the labs:
+openstack_secgrp: k8s-sec-group
+# Base-names for each instance in the lab (hard-coded number: 3):
+openstack_labsrv: kube-node
+# Two nets/mask are allowed in security rules (hard-coded for now):
+## secnet01 is typically your LAN net/mask range:
+openstack_secnet01: 192.168.0.0
+openstack_secmsk01: 16
+## secnet02 is typically the OSAD br-vlan (or public floating) net/mask range:
+openstack_secnet02: 172.29.248.0
+openstack_secmsk02: 22
+################################
+### KUBERNETES DEPLOYMENT:
+# Repository snapshot can be commit, branch or tag:
+# Documentation: https://github.com/kubespray/kargo
+kargo_snapshot: 6a7308d
+################################
+### LAB USERS:
+# Password(s) of the remove lab users:
+## For instuctions on how to generate the following password, please follow:
+## http://docs.ansible.com/ansible/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module
+## Password Example Provided: "kubelab"
+kubelab_pass: "THIS_NEEDS_CHANGED"
+#
+# Name(s) of the remove lab users:
+users:
+  - name: kubeadmin00
+    project_name: kube-os-lab-00
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin01
+    project_name: kube-os-lab-01
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin02
+    project_name: kube-os-lab-02
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin03
+    project_name: kube-os-lab-03
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin04
+    project_name: kube-os-lab-04
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin05
+    project_name: kube-os-lab-05
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin06
+    project_name: kube-os-lab-06
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin07
+    project_name: kube-os-lab-07
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin08
+    project_name: kube-os-lab-08
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin09
+    project_name: kube-os-lab-09
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin10
+    project_name: kube-os-lab-10
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin11
+    project_name: kube-os-lab-11
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin12
+    project_name: kube-os-lab-12
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin13
+    project_name: kube-os-lab-13
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin14
+    project_name: kube-os-lab-14
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin15
+    project_name: kube-os-lab-15
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin16
+    project_name: kube-os-lab-16
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin17
+    project_name: kube-os-lab-17
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin18
+    project_name: kube-os-lab-18
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin19
+    project_name: kube-os-lab-19
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin20
+    project_name: kube-os-lab-20
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin21
+    project_name: kube-os-lab-21
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin22
+    project_name: kube-os-lab-22
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin23
+    project_name: kube-os-lab-23
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin24
+    project_name: kube-os-lab-24
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+  - name: kubeadmin25
+    project_name: kube-os-lab-25
+    project_id: OUTPUT_OPENSTACK_PROJECT_LIST
+# END

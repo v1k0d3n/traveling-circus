@@ -171,4 +171,4 @@ The playbooks are heavily tagged, and can be limited according to your needs. I 
 
 1. Stat and Copy the contents of /opt/openstack-ansible/etc/openstack_deploy to /etc/openstack_deploy for first time installations.
 2. Run the scripts/bootstrap-ansible.sh script to prepare the installation (when running remotely).
-3. Copy contents of a working openstack_user_config.yml and user_variables.yml to /etc/openstack_deploy. 4.
+3. Copy contents of a working openstack_user_config.yml and user_variables.yml to /etc/openstack_deploy.
