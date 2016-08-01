@@ -13,6 +13,7 @@ deploy-openstack/group_vars/*
 deploy-openstack/includes/ssh_keys/*
 deploy-openstack/includes/future
 deploy-kubernetes/group_vars/*
+deploy-kubernetes/inventory.yml
 
 # Things we really want to keep as examples:
 !deploy-openstack/inventory-sample.all
@@ -22,3 +23,4 @@ deploy-kubernetes/group_vars/*
 !deploy-openstack/includes/ssh_keys/user01
 !deploy-openstack/includes/ssh_keys/user02
 !deploy-kubernetes/group_vars/all-sample.yml
+!deploy-kubernetes/inventory-sample.yml
