@@ -26,12 +26,13 @@ This will prepare the shared control host for your lab environments. Currently, 
 Once the control host is ready, the intent is to have others deploy their own Kubernetes environments quickly and interactively. Below are the following steps you will have them perform.
 
 1. Assign users a number (default 01-25). This number corresponds to their Project/Tenant and AdminID. Passwords are assigned during the control host buildout (see above).
-2. Log into into Horizon and the control host.
-3. Change the the `~/openstack` directory, and source the `openrc` file.
-4. Run `deploy-environment.sh` and `deploy-servers.sh`. (See notes in troubleshooting section for issues).
-5. Now with the environment prepared, change into the `~/kargo` directory.
-6. Run the command `openstack server list` and edit `~/kargo/inventory/inventory.cfg` to match the returned IP addresses.
-7. Now run the Kubernetes deployment with the following commands:
+2. Log into into Horizon (over TLS/browser) and the control host (SSH/terminal).
+3. Use the `changepass.sh` script in the `/home/{{user}}` directory to change API endpoint passwords prior to deployment.
+4. Change the the `~/openstack` directory, and source the `openrc` file.
+5. Run `deploy-environment.sh` and `deploy-servers.sh`. (See notes in troubleshooting section for issues).
+6. Now with the environment prepared, change into the `~/kargo` directory.
+7. Run the command `openstack server list` and edit `~/kargo/inventory/inventory.cfg` to match the returned IP addresses.
+8. Now run the Kubernetes deployment with the following commands:
 
   ```
   ansible-playbook -u core -e ansible_ssh_user=core -b --become-user=root -i inventory/inventory.cfg coreos-bootstrap.yml

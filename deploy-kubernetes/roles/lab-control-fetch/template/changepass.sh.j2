@@ -1,4 +1,4 @@
----
+#!/bin/sh
 # Copyright 2016, JinkIT, and it's Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,20 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-- name: remove the kargo repo
-  file: path=/home/{{item.name}}/openstack state=absent
-  with_items:
-    - "{{users}}"
-  tags: lab-control-destroy
+set -x
+export dir=`/bin/pwd`
+export oldpass=`grep 'kube_api_pwd:' $dir/kargo/inventory/group_vars/all.yml | awk -F'"' '$0=$2'`
+export newpass=`pwgen -Bsv1 64`
 
-- name: remove any openrc files that may be left in users home directory
-  file: path=/home/{{item.name}}/opensrc.sh state=absent
-  with_items:
-    - "{{users}}"
-  tags: lab-control-destroy
+sed -i -e "s/$oldpass/$newpass/" $dir/kargo/inventory/group_vars/all.yml
 
-- name: remove any openrc files that may be left in users home directory
-  file: path=/home/{{item.name}}/changepass.sh state=absent
-  with_items:
-    - "{{users}}"
-  tags: lab-control-destroy
+echo "oldpass: $oldpass"
+echo "newpass: $newpass"
+echo "location: $dir/kargo/inventory/group_vars/all.yml"

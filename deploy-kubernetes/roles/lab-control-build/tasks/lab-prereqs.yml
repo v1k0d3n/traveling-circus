@@ -26,6 +26,7 @@
     - gcc
     - ntp
     - sudo
+    - pwgen
     - screen
     - ntpdate
     - openssh-server
