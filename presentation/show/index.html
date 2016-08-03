@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="author" content="Brandon B. Jozsa" />
+
+        <title>Kubernetes Birthday Party</title>
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/att.css">
+
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+              <div id="myLogo" style="background: url(./img/att-logo-white-trans.png);
+                                  position: absolute;
+                                  bottom: 50px;
+                                  right: 50px;
+                                  width: 100px;
+                                  height: 45px;">
+              </div>
+                <section data-markdown="slides/kubernetes-birthday.md"
+                         data-separator="^\n\n\n"
+                         data-separator-vertical="^\n\n">
+                </section>
+            </div>
+        </div>
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+    <script>
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                slideNumber: true,
+                showNotes: false,
+                history: true,
+                center: true,
+
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes-server/client.js', async: true }
+                ]
+            });
+        </script>
+    </body>
+</html>

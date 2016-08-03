@@ -22,7 +22,7 @@ openstack_pubnet: public
 openstack_pubkey: k8s-pub-key
 # Security group name for each of the labs:
 openstack_secgrp: k8s-sec-group
-# Base-names for each instance in the lab (hard-coded number: 3):
+# Base-names for each instance in the lab (hard-coded number: 01:03):
 openstack_labsrv: kube-node
 # Two nets/mask are allowed in security rules (hard-coded for now):
 ## secnet01 is typically your LAN net/mask range:
