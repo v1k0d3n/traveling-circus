@@ -204,7 +204,7 @@ kube-control:~/kargo$ ansible-playbook -u core \
     -i inventory/inventory.cfg cluster.yml
 ```
 
-# LAB PART II: Exploring Kubernetes
+# LAB PART II: Accessing Kubernetes Deployment
 
 After the Kubernetes overview is complete, the lab will pick up again with a successful deployment.
 
@@ -229,13 +229,132 @@ SSH to your first Kubernetes node (in the example above, this is 172.29.248.91).
 kube-control:~/kargo$ ssh core@172.29.248.91
 ```
 
-Run your first Kubernetes deployed container in the lab.
+## Running our First container
+
+Now let's run our first container.
+
+```
+kubectl run my-nginx --image=nginx --replicas=2 --port=80
+```
+
+Let's explore this deployment a little.
+
+```
+kubectl get pods -o wide
+
+NAME                              READY     STATUS    RESTARTS   AGE       IP              NODE
+my-nginx-2494149703-2chi2         1/1       Running   0          8m        10.233.69.5     kube-node01
+my-nginx-2494149703-c7zi6         1/1       Running   0          8m        10.233.100.4    kube-node03
+core@kube-node01 ~ $
+```
+
+Looks good. Now let's expose our container.
+
+```
+kubectl expose deployment my-nginx --port=80 --type=NodePort
+```
+
+Now let's look at this deployment.
+
+```
+core@kube-node01 ~ $ kubectl describe pod my-nginx-2494149703-2chi2
+Name:		my-nginx-2494149703-2chi2
+Namespace:	default
+Node:		kube-node01/172.29.248.91
+Start Time:	Wed, 03 Aug 2016 20:33:03 +0000
+Labels:		pod-template-hash=2494149703
+		run=my-nginx
+Status:		Running
+IP:		10.233.69.5
+Controllers:	ReplicaSet/my-nginx-2494149703
+Containers:
+  my-nginx:
+    Container ID:		docker://cb5e638874e0c176875a50c2bc7e1c773b9bc981d06a310e83c852807a8c5d35
+    Image:			nginx
+    Image ID:			docker://sha256:0d409d33b27e47423b049f7f863faa08655a8c901749c2b25b93ca67d01a470d
+    Port:			80/TCP
+    State:			Running
+      Started:			Wed, 03 Aug 2016 20:33:33 +0000
+    Ready:			True
+    Restart Count:		0
+    Environment Variables:	<none>
+Conditions:
+  Type		Status
+  Initialized 	True
+  Ready 	True
+  PodScheduled 	True
+Volumes:
+  default-token-n32yo:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	default-token-n32yo
+QoS Tier:	BestEffort
+Events:
+  FirstSeen	LastSeen	Count	From			SubobjectPath			Type		Reason		Message
+  ---------	--------	-----	----			-------------			--------	------		-------
+  1m		1m		1	{default-scheduler }					Normal		Scheduled	Successfully assigned my-nginx-2494149703-2chi2 to kube-node01
+  1m		1m		1	{kubelet kube-node01}	spec.containers{my-nginx}	Normal		Pulling		pulling image "nginx"
+  1m		1m		1	{kubelet kube-node01}	spec.containers{my-nginx}	Normal		Pulled		Successfully pulled image "nginx"
+  1m		1m		1	{kubelet kube-node01}	spec.containers{my-nginx}	Normal		Created		Created container with docker id cb5e638874e0
+  1m		1m		1	{kubelet kube-node01}	spec.containers{my-nginx}	Normal		Started		Started container with docker id cb5e638874e0
+
+
+core@kube-node01 ~ $
+```
+
+Now let's look at the services.
+
+```
+core@kube-node01 ~ $ kubectl get services
+NAME             CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+ghost            10.233.17.236   <nodes>       2368/TCP   43m
+kubernetes       10.233.0.1      <none>        443/TCP    5h
+my-nginx         10.233.29.207   <nodes>       80/TCP     12m
+weavescope-app   10.233.43.140   <nodes>       4040/TCP   27m
+```
+
+Now we need to know what NodePort this service is located on.
+
+```
+core@kube-node01 ~ $ kubectl describe service my-nginx
+Name:			my-nginx
+Namespace:		default
+Labels:			run=my-nginx
+Selector:		run=my-nginx
+Type:			NodePort
+IP:			10.233.29.207
+Port:			<unset>	80/TCP
+NodePort:		<unset>	30351/TCP
+Endpoints:		10.233.100.4:80,10.233.69.5:80
+Session Affinity:	None
+No events.
+
+core@kube-node01 ~ $
+```
+
+
+Can we access the webpage at 172.29.248.91:30351? If so, let's access the CLI of this container (troubleshooting). First we need to know the container, and the pod from earlier. Once we are in the pod, we're going to do some troubleshooting.
+
+```
+kubectl exec -ti my-nginx-2494149703-2chi2 -c my-nginx -- sh
+# ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8): 56 data bytes
+64 bytes from 8.8.8.8: icmp_seq=0 ttl=40 time=31.279 ms
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=40 time=27.153 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=40 time=32.569 ms
+64 bytes from 8.8.8.8: icmp_seq=3 ttl=40 time=35.810 ms
+^C--- 8.8.8.8 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max/stddev = 27.153/31.703/35.810/3.102 ms
+#
+```
+
+Great, we can talk outside!
+
+Let's run something more fun. Let's run a Ghost Blog.
 
 ```
 kubectl run ghost --image=ghost --port=2368
 ```
-
-
 
 Now we're going to explore the pod that we created.
 
