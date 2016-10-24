@@ -52,7 +52,6 @@
   tags:
     - all-tools
 
-
 - name: and let users know when they're not root
   replace:
     dest: /home/{{item}}/.bashrc
