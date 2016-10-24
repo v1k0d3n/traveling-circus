@@ -35,6 +35,24 @@
   tags:
     - all-tools
 
+- name: Check if .bashrc file exists
+  stat:
+    path: /home/{{ item }}/.bashrc
+  register: bashrc_exists
+  with_items:
+    - "{{ ssh_users }}"
+  tags:
+    - all-tools
+
+- name: deploy .bashrc file if none exists
+  shell: "cp /etc/skel/.bashrc /home/{{ item.item }}/"
+  when: item.stat.exists == False
+  with_items:
+    - "{{ bashrc_exists.results }}"
+  tags:
+    - all-tools
+
+
 - name: and let users know when they're not root
   replace:
     dest: /home/{{item}}/.bashrc
@@ -62,15 +80,25 @@
   tags:
     - all-tools
 
+- name: check for .bash_aliases file
+  stat:
+    path: /home/{{ item }}/.bash_aliases
+  register: bash_aliases_exists
+  with_items:
+    - "{{ ssh_users }}"
+  tags:
+    - all-tools
+
 - name: ensure that everyone has a .bash_aliases file
   file:
     state: touch
-    path: /home/{{item}}/.bash_aliases
-    owner: "{{item}}"
+    path: /home/{{ item.item }}/.bash_aliases
+    owner: "{{ item.item }}"
     group: nixadmins
     mode: "u=rw,g=r,o=r"
+  when: item.stat.exists == False
   with_items:
-    - "{{ssh_users}}"
+    - "{{ bash_aliases_exists.results }}"
   tags:
     - all-tools
 
