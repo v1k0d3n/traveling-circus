@@ -32,11 +32,13 @@
     state: present
     create: True
     backup: yes
+  register: ssh_config_changed
   tags:
     - all-keys
 
 - name: restart sshd on the host
   service: name=ssh state=reloaded
+  when: ssh_config_changed | changed
   tags:
     - all-keys
 
